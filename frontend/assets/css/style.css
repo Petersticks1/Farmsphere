@@ -1,0 +1,16 @@
+/**
+ * FarmSphere – Custom styles
+ * Green, brown, and white palette; mobile-first overrides
+ */
+
+:root {
+  --farmsphere-green: #0d401c;
+  --farmsphere-brown: #5c4033;
+  --farmsphere-white: #fafaf8;
+}
+
+/* Optional: FarmSphere brand overrides for buttons/links */
+.tf-btn.bg-white .text-style.cl-primary:hover,
+a.hover-text-4:hover {
+  color: var(--farmsphere-green) !important;
+}
