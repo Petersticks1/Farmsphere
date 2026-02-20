@@ -1291,33 +1291,35 @@
       $body.html(html);
     };
 
-    var buildWhatsAppOrderUrl = function () {
+    var buildWhatsAppOrderUrl = function (customer) {
       var cart = getCart();
       if (!cart.length) return "";
 
       var lines = [
         "Hello FarmSphere, I want to place an order:",
         "",
-        "Customer Name: ",
-        "Phone Number: ",
-        "Delivery Address: ",
-        "Preferred Delivery Date/Time: ",
+        "*Customer Information:*",
+        "Name: " + (customer ? customer.name : ""),
+        "Phone: " + (customer ? customer.phone : ""),
+        "Delivery Address: " + (customer ? customer.address : ""),
+        "Preferred Delivery: " + (customer ? customer.delivery : ""),
         "",
+        "*Order Details:*",
       ];
       cart.forEach(function (item, index) {
         lines.push(
-          index +
-            1 +
-            ". " +
-            item.name +
-            " x" +
-            item.qty +
-            " - " +
-            formatNaira(item.price * item.qty),
+          (index + 1) +
+          ". " +
+          item.name +
+          " x" +
+          item.qty +
+          " - " +
+          formatNaira(item.price * item.qty),
         );
       });
       lines.push("");
-      lines.push("Total Price: " + formatNaira(totalAmount(cart)));
+      lines.push("*Total Price: " + formatNaira(totalAmount(cart)) + "*");
+      lines.push("");
       lines.push("Please confirm availability and delivery details.");
 
       return (
@@ -1458,14 +1460,55 @@
       if (!isCartCheckoutButton) return;
 
       event.preventDefault();
-      var whatsappUrl = buildWhatsAppOrderUrl();
-      if (!whatsappUrl) {
+
+      var cart = getCart();
+      if (!cart.length) {
         alert("Your cart is empty. Add products before checkout.");
         return;
       }
+
+      // Hide cart modal
+      var cartModal = document.getElementById("addcart");
+      if (cartModal && window.bootstrap) {
+        window.bootstrap.Modal.getOrCreateInstance(cartModal).hide();
+      }
+
+      // Show order form modal
+      var orderModal = document.getElementById("orderFormModal");
+      if (orderModal && window.bootstrap) {
+        window.bootstrap.Modal.getOrCreateInstance(orderModal).show();
+      }
+    });
+
+    $(document).on("submit", "#whatsappOrderForm", function (event) {
+      event.preventDefault();
+
+      var name = $(this).find('input[name="customerName"]').val();
+      var phone = $(this).find('input[name="phoneNumber"]').val();
+      var address = $(this).find('textarea[name="address"]').val();
+      var delivery = $(this).find('input[name="deliveryDateTime"]').val();
+
+      var customer = {
+        name: name,
+        phone: phone,
+        address: address,
+        delivery: delivery,
+      };
+
+      var whatsappUrl = buildWhatsAppOrderUrl(customer);
+      if (!whatsappUrl) return;
+
       window.open(whatsappUrl, "_blank");
+
+      // Clear cart and close modal
       saveCart([]);
       renderCart();
+
+      var orderModal = document.getElementById("orderFormModal");
+      if (orderModal && window.bootstrap) {
+        window.bootstrap.Modal.getOrCreateInstance(orderModal).hide();
+      }
+      this.reset();
     });
   };
   var preloader = function () {
