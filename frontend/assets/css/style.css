@@ -14,3 +14,40 @@
 a.hover-text-4:hover {
   color: var(--farmsphere-green) !important;
 }
+
+/* Restructured Testimonial Section */
+.s-testimonial .content-wrap {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 30px;
+}
+
+.s-testimonial .content-wrap .image {
+  width: 40% !important;
+  margin: 0 !important;
+  position: relative !important;
+}
+
+.s-testimonial .content-wrap .image img {
+  position: static !important;
+  width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  border-radius: 20px;
+}
+
+.s-testimonial .content-wrap .content-section {
+  width: 55% !important;
+  margin: 0 !important;
+  padding-top: 0 !important;
+}
+
+@media (max-width: 991px) {
+
+  .s-testimonial .content-wrap .image,
+  .s-testimonial .content-wrap .content-section {
+    width: 100% !important;
+  }
+}
